@@ -1,1 +1,1 @@
-# Nextjs-Starter
+# Simpler Dictionary
