@@ -7,7 +7,11 @@ import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useTheme } from 'next-themes'
 
-export default function Options() {
+type OptionsProps = {
+	setFontSize: (size: number) => void
+}
+
+export default function Options({ setFontSize }: OptionsProps) {
 	const [isOpen, setIsOpen] = useState(true)
 	const { setTheme } = useTheme()
 
@@ -71,6 +75,9 @@ export default function Options() {
 						Font size
 					</label>
 					<input
+						min={12}
+						max={26}
+						onChange={(e) => setFontSize(parseInt(e.target.value))}
 						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
 						type='range'
 					/>

@@ -5,11 +5,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Volume2 } from 'lucide-react'
 import Image from 'next/image'
+import { useState } from 'react'
 
 export default function Home() {
+	const [fontSize, setFontSize] = useState(16)
 	return (
 		<div className='flex flex-1'>
-			<Options />
+			<Options setFontSize={(size) => setFontSize(size)} />
 
 			<section className='flex-1 p-6 pt-8 md:px-10 lg:mx-60'>
 				<div className='flex flex-col items-center'>
@@ -36,10 +38,13 @@ export default function Home() {
 					</div>
 
 					<div className='my-4 mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white md:mt-0'>
-						<p className='flex max-w-md flex-col text-xl lg:flex-row'>
+						<p
+							style={{ fontSize: fontSize }}
+							className='flex max-w-md flex-col text-xl lg:flex-row'
+						>
 							<span className='font-[500] dark:text-slate-200'>
-								Meaning:
-							</span>{' '}
+								Meaning :
+							</span>&nbsp;
 							The meaning goes here
 						</p>
 						<span className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'>
@@ -78,9 +83,12 @@ export default function Home() {
 					</div>
 
 					<div className='mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white'>
-						<p className='flex max-w-md flex-col text-xl lg:flex-row'>
+						<p
+							style={{ fontSize: fontSize }}
+							className='flex max-w-md flex-col text-xl lg:flex-row'
+						>
 							<span className='flex font-[500]  dark:text-slate-200'>
-								Sentence:{' '}
+								Sentence : &nbsp;
 							</span>
 							A sentence goes here
 						</p>

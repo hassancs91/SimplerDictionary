@@ -45,7 +45,7 @@ function Navbar() {
 export default Navbar
 
 const MobileNavbar = () => {
-	const [isOpen, setIsOpen] = useState(true)
+	const [isOpen, setIsOpen] = useState(false)
 	const { setTheme } = useTheme()
 	return (
 		<header className='flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-800 md:hidden'>
