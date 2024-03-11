@@ -43,6 +43,7 @@ export default function RootLayout({
 				<ThemeProvider
 					attribute='class'
 					enableSystem={false}
+                    defaultTheme='light'
 					disableTransitionOnChange
 				>
 					<main className='max-w-screen flex h-screen flex-1 flex-col antialiased'>
