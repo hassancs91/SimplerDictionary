@@ -14,9 +14,12 @@ export default function Options() {
 	return (
 		<aside
 			className={cn(
-				'transition-width relative flex h-full flex-col border-gray-200 duration-300 dark:border-slate-800 lg:py-8',
-				{ 'w-64 border-r p-4': isOpen },
-				{ 'w-0 py-4': !isOpen }
+				'transition-width hidden flex-col border-gray-200 bg-white duration-300 dark:border-slate-800 dark:bg-background md:flex md:h-full lg:py-8',
+				{
+					'absolute bottom-[46px] top-[60px] w-64 border-r p-4  md:static':
+						isOpen
+				},
+				{ 'relative py-4 md:w-0': !isOpen }
 			)}
 		>
 			<div className='flex items-center justify-between'>
@@ -33,7 +36,7 @@ export default function Options() {
 						'cursor-pointer text-gray-500 hover:opacity-80 dark:text-slate-500',
 						{ 'rotate-180 transform p-2': isOpen },
 						{
-							'absolute left-6 top-6 rounded-full bg-gray-100 dark:bg-slate-800 dark:text-slate-500 p-2':
+							'absolute left-6 top-6 rounded-full bg-gray-100 p-2 dark:bg-slate-800 dark:text-slate-500':
 								!isOpen
 						}
 					)}
