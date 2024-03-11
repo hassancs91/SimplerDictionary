@@ -14,7 +14,7 @@ export default function Options() {
 	return (
 		<aside
 			className={cn(
-				'transition-width relative flex h-full flex-col border-gray-200 duration-300 dark:border-gray-700 lg:py-8',
+				'transition-width relative flex h-full flex-col border-gray-200 duration-300 dark:border-slate-800 lg:py-8',
 				{ 'w-64 border-r p-4': isOpen },
 				{ 'w-0 py-4': !isOpen }
 			)}
@@ -30,10 +30,10 @@ export default function Options() {
 				</h2>
 				<span
 					className={cn(
-						'cursor-pointer text-gray-500 hover:opacity-80 dark:text-gray-300',
+						'cursor-pointer text-gray-500 hover:opacity-80 dark:text-slate-500',
 						{ 'rotate-180 transform p-2': isOpen },
 						{
-							'absolute left-6 top-6 rounded-full bg-gray-100 p-2':
+							'absolute left-6 top-6 rounded-full bg-gray-100 dark:bg-slate-800 dark:text-slate-500 p-2':
 								!isOpen
 						}
 					)}
@@ -48,7 +48,7 @@ export default function Options() {
 						Speed
 					</label>
 					<input
-						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700'
+						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
 						type='range'
 					/>
 				</div>
@@ -68,7 +68,7 @@ export default function Options() {
 						Font size
 					</label>
 					<input
-						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700'
+						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
 						type='range'
 					/>
 				</div>

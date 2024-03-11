@@ -2,15 +2,15 @@ import Link from 'next/link'
 
 function Navbar() {
 	return (
-		<header className='flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700'>
-			<h1 className='text-xl font-semibold text-gray-900 dark:text-white'>
+		<header className='flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-800'>
+			<h1 className='text-xl font-semibold text-gray-900 dark:text-slate-200'>
 				SimplerDictionary
 			</h1>
 			<nav>
 				<ul className='flex space-x-2 text-sm'>
 					<li>
 						<Link
-							className='hover:bg-gray-100 p-2 rounded dark:text-blue-300'
+							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
 							href='#'
 						>
 							About
@@ -18,7 +18,7 @@ function Navbar() {
 					</li>
 					<li>
 						<Link
-							className='hover:bg-gray-100 p-2 rounded dark:text-blue-300'
+							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
 							href='#'
 						>
 							Contact
