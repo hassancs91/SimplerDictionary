@@ -7,21 +7,21 @@ function Navbar() {
 				SimplerDictionary
 			</h1>
 			<nav>
-				<ul className='flex space-x-4'>
+				<ul className='flex space-x-2 text-sm'>
 					<li>
 						<Link
-							className='text-blue-600 dark:text-blue-300'
+							className='hover:bg-gray-100 p-2 rounded dark:text-blue-300'
 							href='#'
 						>
-							Link1
+							About
 						</Link>
 					</li>
 					<li>
 						<Link
-							className='text-blue-600 dark:text-blue-300'
+							className='hover:bg-gray-100 p-2 rounded dark:text-blue-300'
 							href='#'
 						>
-							Link2
+							Contact
 						</Link>
 					</li>
 				</ul>

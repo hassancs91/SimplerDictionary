@@ -1,3 +1,5 @@
+"use client"
+
 import Options from '@/components/options-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
