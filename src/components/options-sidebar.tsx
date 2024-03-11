@@ -9,9 +9,17 @@ import { useTheme } from 'next-themes'
 
 type OptionsProps = {
 	setFontSize: (size: number) => void
+	setPlaybackSpeed: (speed: number) => void
+	playbackSpeed: number
+	fontSize: number
 }
 
-export default function Options({ setFontSize }: OptionsProps) {
+export default function Options({
+	setFontSize,
+	setPlaybackSpeed,
+	playbackSpeed,
+	fontSize
+}: OptionsProps) {
 	const [isOpen, setIsOpen] = useState(true)
 	const { setTheme } = useTheme()
 
@@ -55,9 +63,18 @@ export default function Options({ setFontSize }: OptionsProps) {
 						Speed
 					</label>
 					<input
+						min={0.5}
+						max={2.0}
+						step={0.1}
+						onChange={(e) =>
+							setPlaybackSpeed(parseFloat(e.target.value))
+						}
 						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
 						type='range'
 					/>
+					<span className='rounded-full bg-gray-200 px-2 py-1 text-sm font-medium text-gray-700 dark:bg-slate-800 dark:text-slate-500'>
+						{playbackSpeed}x
+					</span>
 				</div>
 
 				<div className='mt-4 flex items-center gap-2'>
@@ -81,6 +98,9 @@ export default function Options({ setFontSize }: OptionsProps) {
 						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
 						type='range'
 					/>
+					<span className='rounded-full bg-gray-200 px-2 py-1 text-sm font-medium text-gray-700 dark:bg-slate-800 dark:text-slate-500'>
+						{fontSize}
+					</span>
 				</div>
 
 				<div className='mt-auto'>
