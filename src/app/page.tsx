@@ -1,4 +1,5 @@
 'use client'
+import { getWordMeaning } from '@/api/word-search'
 import MobileNavbar from '@/components/layout/mobilenav'
 import Options from '@/components/options-sidebar'
 import { Button } from '@/components/ui/button'
@@ -24,6 +25,16 @@ export default function Home() {
 		if (AudioRefs[type].current) {
 			AudioRefs[type].current?.play()
 		}
+	}
+
+	const speakText = async (text: string) => {
+		if ('speechSynthesis' in window) {
+			const synth = window.speechSynthesis
+			const utterance = new SpeechSynthesisUtterance(text)
+			synth.speak(utterance)
+		}
+
+        let response  = await getWordMeaning('hello')
 	}
 
 	useEffect(() => {
@@ -56,7 +67,7 @@ export default function Home() {
 
 				<section className='flex-1 p-6 pt-8 md:px-10 lg:mx-60'>
 					<div className='flex flex-col items-center'>
-						<h2 className='mb-4 text-center text-4xl font-semibold text-gray-900 dark:text-slate-200 md:text-5xl'>
+						<h2 onClick={()=>speakText("Hello world I am from the moon I will see you soon.")} className='mb-4 text-center text-4xl font-semibold text-gray-900 dark:text-slate-200 md:text-5xl'>
 							Enter your word
 						</h2>
 
