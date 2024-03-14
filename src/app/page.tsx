@@ -1,53 +1,82 @@
 'use client'
+
 import { getWordMeaning } from '@/api/word-search'
 import MobileNavbar from '@/components/layout/mobilenav'
 import Options from '@/components/options-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Volume2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Speech, Volume2 } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
+
+type WordMeaningType = {
+	user_input: string
+	corrected_word: string
+	simple_meaning: string
+	detailed_meaning: string
+	sentence: string
+	images: string[]
+}
+
+type TextSpeechType =
+	| 'corrected_word'
+	| 'simple_meaning'
+	| 'detailed_meaning'
+	| 'sentence'
 
 export default function Home() {
 	const [fontSize, setFontSize] = useState(16)
 	const [playbackSpeed, setPlaybackSpeed] = useState<number>(1)
-	const wordAudioRef = useRef<HTMLAudioElement>(null)
-	const meaningAudioRef = useRef<HTMLAudioElement>(null)
-	const sentenceAudioRef = useRef<HTMLAudioElement>(null)
+	const [wordMeaning, setWordMeaning] = useState<WordMeaningType | null>(null)
+	const [isSearching, setIsSearching] = useState(false)
+	const [isSpeaking, setIsSpeaking] = useState<TextSpeechType | null>(null)
 
-	const AudioRefs = {
-		word: wordAudioRef,
-		meaning: meaningAudioRef,
-		sentence: sentenceAudioRef
-	}
-
-	const playAudio = (type: 'word' | 'meaning' | 'sentence') => {
-		if (AudioRefs[type].current) {
-			AudioRefs[type].current?.play()
-		}
-	}
-
-	const speakText = async (text: string) => {
+	const speakText = (
+		text:
+			| 'corrected_word'
+			| 'simple_meaning'
+			| 'detailed_meaning'
+			| 'sentence'
+	) => {
 		if ('speechSynthesis' in window) {
 			const synth = window.speechSynthesis
-			const utterance = new SpeechSynthesisUtterance(text)
+			if (!wordMeaning) {
+				const utterance = new SpeechSynthesisUtterance(
+					'No text to read! Please search word again.'
+				)
+				synth.speak(utterance)
+				return
+			}
+
+			setIsSpeaking(text)
+			let readText = wordMeaning[text]
+			const utterance = new SpeechSynthesisUtterance(readText)
+			utterance.rate = playbackSpeed
+
+			// Event handler for when the speech has finished
+			utterance.onend = () => {
+				setIsSpeaking(null)
+			}
+
+			// Also consider handling errors
+			utterance.onerror = () => {
+				setIsSpeaking(null)
+			}
+
 			synth.speak(utterance)
 		}
-
-        let response  = await getWordMeaning('hello')
 	}
 
-	useEffect(() => {
-		if (
-			wordAudioRef.current &&
-			meaningAudioRef.current &&
-			sentenceAudioRef.current
-		) {
-			wordAudioRef.current.playbackRate = playbackSpeed
-			meaningAudioRef.current.playbackRate = playbackSpeed
-			sentenceAudioRef.current.playbackRate = playbackSpeed
-		}
-	}, [playbackSpeed])
+	const getMeaning = async () => {
+		setIsSearching(true)
+
+		let response = await getWordMeaning('hello')
+		setWordMeaning(response)
+
+		setIsSearching(false)
+	}
+
 
 	return (
 		<>
@@ -67,7 +96,7 @@ export default function Home() {
 
 				<section className='flex-1 p-6 pt-8 md:px-10 lg:mx-60'>
 					<div className='flex flex-col items-center'>
-						<h2 onClick={()=>speakText("Hello world I am from the moon I will see you soon.")} className='mb-4 text-center text-4xl font-semibold text-gray-900 dark:text-slate-200 md:text-5xl'>
+						<h2 className='mb-4 text-center text-4xl font-semibold text-gray-900 dark:text-slate-200 md:text-5xl'>
 							Enter your word
 						</h2>
 
@@ -78,36 +107,53 @@ export default function Home() {
 							/>
 							<div className='flex gap-2 md:gap-4'>
 								<Button
-									className='flex-1 dark:text-slate-200'
+									onClick={getMeaning}
+									disabled={isSearching ? true : false}
+									className='flex-1 disabled:cursor-not-allowed dark:text-slate-200'
 									variant='outline'
 								>
-									Submit
+									{isSearching ? 'Searching...' : 'Search'}
 								</Button>
 								<span
-									onClick={() => playAudio('word')}
-									className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'
+									onClick={() => speakText('corrected_word')}
+									className={cn(
+										'h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'
+									)}
 								>
-									<Volume2 className='text-gray-500 dark:text-slate-500' />
+									{isSpeaking == 'corrected_word' ? (
+										<Speech className='text-gray-500 dark:text-slate-500' />
+									) : (
+										<Volume2 className='text-gray-500 dark:text-slate-500' />
+									)}
 								</span>
 							</div>
 						</div>
 
 						<div className='my-4 mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white md:mt-0'>
-							<p
-								style={{ fontSize: fontSize }}
-								className='flex max-w-md flex-col text-xl lg:flex-row'
-							>
-								<span className='font-[500] dark:text-slate-200'>
+							<div className='flex gap-2'>
+								<p
+									style={{ fontSize: fontSize }}
+									className='font-[500] dark:text-slate-200'
+								>
 									Meaning :
-								</span>
-								&nbsp; The meaning goes here
-							</p>
+								</p>
+								<p
+									style={{ fontSize: fontSize }}
+									className='text-xl lg:flex-row'
+								>
+									{wordMeaning?.detailed_meaning}
+								</p>
+							</div>
 							<span
-								onClick={() => playAudio('meaning')}
+								onClick={() => speakText('detailed_meaning')}
 								className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'
 							>
-								<Volume2 className='text-gray-500 dark:text-slate-500' />
-							</span>{' '}
+								{isSpeaking == 'detailed_meaning' ? (
+									<Speech className='text-gray-500 dark:text-slate-500' />
+								) : (
+									<Volume2 className='text-gray-500 dark:text-slate-500' />
+								)}
+							</span>
 						</div>
 
 						<div
@@ -115,7 +161,9 @@ export default function Home() {
 							className='mb-4 grid select-none grid-cols-3 gap-4'
 						>
 							<Image
-								src='/placeholder.svg'
+								src={
+									wordMeaning?.images[0] ?? '/placeholder.svg'
+								}
 								height='250'
 								width='250'
 								draggable={false}
@@ -123,7 +171,9 @@ export default function Home() {
 								className='aspect-square'
 							/>
 							<Image
-								src='/placeholder.svg'
+								src={
+									wordMeaning?.images[1] ?? '/placeholder.svg'
+								}
 								width='250'
 								height='250'
 								draggable={false}
@@ -131,7 +181,9 @@ export default function Home() {
 								className='aspect-square'
 							/>
 							<Image
-								src='/placeholder.svg'
+								src={
+									wordMeaning?.images[2] ?? '/placeholder.svg'
+								}
 								height='250'
 								width='250'
 								draggable={false}
@@ -141,36 +193,33 @@ export default function Home() {
 						</div>
 
 						<div className='mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white'>
-							<p
-								style={{ fontSize: fontSize }}
-								className='flex max-w-md flex-col text-xl lg:flex-row'
-							>
-								<span className='flex font-[500]  dark:text-slate-200'>
-									Sentence : &nbsp;
-								</span>
-								A sentence goes here
-							</p>
+							<div className='flex gap-2'>
+								<p
+									style={{ fontSize: fontSize }}
+									className='flex font-[500]  dark:text-slate-200'
+								>
+									Sentence :
+								</p>
+								<p
+									style={{ fontSize: fontSize }}
+									className='flex flex-col text-xl lg:flex-row'
+								>
+									{wordMeaning?.sentence}
+								</p>
+							</div>
 							<span
-								onClick={() => playAudio('sentence')}
+								onClick={() => speakText('sentence')}
 								className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'
 							>
-								<Volume2 className='text-gray-500 dark:text-slate-500' />
+								{isSpeaking == 'sentence' ? (
+									<Speech className='text-gray-500 dark:text-slate-500' />
+								) : (
+									<Volume2 className='text-gray-500 dark:text-slate-500' />
+								)}
 							</span>
 						</div>
 					</div>
 				</section>
-				<audio
-					ref={wordAudioRef}
-					src='https://cdn.freesound.org/previews/277/277594_5324256-lq.mp3'
-				/>
-				<audio
-					ref={meaningAudioRef}
-					src='https://cdn.freesound.org/previews/644/644758_13590673-lq.ogg'
-				/>
-				<audio
-					ref={sentenceAudioRef}
-					src='https://cdn.freesound.org/previews/415/415161_7968717-lq.ogg'
-				/>
 			</div>
 		</>
 	)
