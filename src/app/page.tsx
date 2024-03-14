@@ -77,7 +77,6 @@ export default function Home() {
 		setIsSearching(false)
 	}
 
-
 	return (
 		<>
 			<MobileNavbar
@@ -130,7 +129,7 @@ export default function Home() {
 						</div>
 
 						<div className='my-4 mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white md:mt-0'>
-							<div className='flex gap-2'>
+							<div className='flex flex-col'>
 								<p
 									style={{ fontSize: fontSize }}
 									className='font-[500] dark:text-slate-200'
@@ -193,7 +192,7 @@ export default function Home() {
 						</div>
 
 						<div className='mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white'>
-							<div className='flex gap-2'>
+							<div className='flex flex-col'>
 								<p
 									style={{ fontSize: fontSize }}
 									className='flex font-[500]  dark:text-slate-200'
