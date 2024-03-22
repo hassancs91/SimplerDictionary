@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { Speech, Volume2 } from 'lucide-react'
 import Image from 'next/image'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import {
 	Accordion,
@@ -32,12 +32,15 @@ type TextSpeechType =
 	| 'detailed_meaning'
 	| 'sentence'
 
+export type CachedWordMeaningsType = Record<string, WordMeaningType>
+
 export default function Home() {
 	const [fontSize, setFontSize] = useState(16)
 	const [playbackSpeed, setPlaybackSpeed] = useState<number>(1)
 	const [wordMeaning, setWordMeaning] = useState<WordMeaningType | null>(null)
 	const [isSearching, setIsSearching] = useState(false)
 	const [isSpeaking, setIsSpeaking] = useState<TextSpeechType | null>(null)
+	const [cachedWords, setCachedWords] = useState<CachedWordMeaningsType>({})
 	const [word, setWord] = useState<string>('')
 	const [notFound, setNotFound] = useState(false)
 
@@ -77,15 +80,26 @@ export default function Home() {
 		}
 	}
 
-	const getMeaning = async (e: FormEvent<HTMLFormElement>) => {
+	const getMeaning = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-        setWordMeaning(null)
+		setWordMeaning(null)
 
 		if (!word) {
 			toast.error('Please enter a word to search!')
 			return
 		}
 		setIsSearching(true)
+
+		// Check if the word is in local storage
+		const cachedWordMeanings = localStorage.getItem('cachedWords')
+		if (cachedWordMeanings) {
+			const wordMeanings = JSON.parse(cachedWordMeanings)
+			if (wordMeanings[word]) {
+				setWordMeaning(wordMeanings[word])
+				setIsSearching(false)
+				return
+			}
+		}
 
 		let response = await getWordMeaning(word)
 		if (!response) {
@@ -94,9 +108,25 @@ export default function Home() {
 			return
 		}
 
+		// Store the word meaning in local storage
+		const updatedWordMeanings = {
+			...cachedWords,
+			[word]: response
+		}
+		localStorage.setItem('cachedWords', JSON.stringify(updatedWordMeanings))
+		setCachedWords(updatedWordMeanings)
+
 		setWordMeaning(response)
 		setIsSearching(false)
 	}
+
+	useEffect(() => {
+		// Load cached word meanings on component mount
+		const cachedWordMeanings = localStorage.getItem('cachedWords')
+		if (cachedWordMeanings) {
+			setCachedWords(JSON.parse(cachedWordMeanings))
+		}
+	}, [])
 
 	return (
 		<>
@@ -105,10 +135,24 @@ export default function Home() {
 				setPlaybackSpeed={(speed) => setPlaybackSpeed(speed)}
 				playbackSpeed={playbackSpeed}
 				fontSize={fontSize}
+				setClickedWord={(word) => {
+					setWordMeaning(cachedWords[word])
+					setWord(word)
+                    setNotFound(false)
+				}}
+				cachedWords={cachedWords}
+				resetCachedWords={() => setCachedWords({})}
 			/>
 			<div className='flex flex-1'>
 				<Options
+					setClickedWord={(word) => {
+						setWordMeaning(cachedWords[word])
+						setWord(word)
+                        setNotFound(false)
+					}}
 					setFontSize={(size) => setFontSize(size)}
+					cachedWords={cachedWords}
+					resetCachedWords={() => setCachedWords({})}
 					setPlaybackSpeed={(speed) => setPlaybackSpeed(speed)}
 					playbackSpeed={playbackSpeed}
 					fontSize={fontSize}
@@ -162,7 +206,7 @@ export default function Home() {
 
 						<div
 							className={cn(
-								'hidden w-full items-center justify-between rounded-lg p-4 dark:bg-slate-900',
+								'mt-4 hidden w-full items-center justify-between rounded-lg bg-gray-100 p-4 dark:bg-slate-900 md:mt-0',
 								{ flex: notFound }
 							)}
 						>

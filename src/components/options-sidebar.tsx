@@ -2,26 +2,40 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 
-import { Settings } from 'lucide-react'
-import { useState } from 'react'
+import { Database, Settings } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useTheme } from 'next-themes'
+import { CachedWordMeaningsType } from '@/app/page'
+import { toast } from 'sonner'
 
 type OptionsProps = {
 	setFontSize: (size: number) => void
 	setPlaybackSpeed: (speed: number) => void
 	playbackSpeed: number
 	fontSize: number
+	cachedWords: CachedWordMeaningsType
+	resetCachedWords: () => void
+	setClickedWord: (word: string) => void
 }
 
 export default function Options({
 	setFontSize,
 	setPlaybackSpeed,
 	playbackSpeed,
-	fontSize
+	fontSize,
+	cachedWords,
+	resetCachedWords,
+	setClickedWord
 }: OptionsProps) {
 	const [isOpen, setIsOpen] = useState(true)
 	const { setTheme } = useTheme()
+
+	const clearCache = () => {
+		localStorage.removeItem('cachedWords')
+		resetCachedWords()
+		toast.success('Cache cleared!')
+	}
 
 	return (
 		<aside
@@ -103,8 +117,33 @@ export default function Options({
 					</span>
 				</div>
 
+				{Object.keys(cachedWords).length > 0 ? (
+					<div className='my-6 flex-1 overflow-y-auto rounded-lg bg-gray-100 p-4'>
+						{Object.keys(cachedWords).map((word: string) => {
+							return (
+								<p
+									onClick={() => setClickedWord(word)}
+									key={word}
+									className='cursor-pointer p-1 text-sm font-medium capitalize text-gray-700 hover:bg-gray-50'
+								>
+									{word}
+								</p>
+							)
+						})}
+					</div>
+				) : (
+					<div className='my-6 flex flex-1 flex-col items-center justify-center overflow-y-auto rounded-lg bg-gray-100 p-4 text-gray-500 dark:text-slate-500'>
+						<Database size={20} className='' />
+						<p>No cached words</p>
+					</div>
+				)}
+
 				<div className='mt-auto'>
-					<Button className='w-full' variant='outline'>
+					<Button
+						onClick={clearCache}
+						className='w-full'
+						variant='outline'
+					>
 						Clear Cache
 					</Button>
 				</div>
