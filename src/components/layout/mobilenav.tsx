@@ -116,6 +116,7 @@ const MobileNavbar = ({
 							onChange={(e) =>
 								setFontSize(parseInt(e.target.value))
 							}
+                            value={fontSize}
 							className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
 							type='range'
 						/>
@@ -125,13 +126,13 @@ const MobileNavbar = ({
 					</div>
 
 					{Object.keys(cachedWords).length > 0 ? (
-						<div className='my-6 flex-1 overflow-y-auto rounded-lg bg-gray-100 p-4'>
+						<div className='my-6 flex-1 overflow-y-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-4'>
 							{Object.keys(cachedWords).map((word: string) => {
 								return (
 									<p
 										onClick={() => setClickedWord(word)}
 										key={word}
-										className='cursor-pointer p-1 text-sm font-medium capitalize text-gray-700 hover:bg-gray-50'
+										className='cursor-pointer p-1 text-sm font-medium capitalize text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-background dark:active:bg-gray-900 rounded'
 									>
 										{word}
 									</p>
@@ -139,7 +140,7 @@ const MobileNavbar = ({
 							})}
 						</div>
 					) : (
-						<div className='my-6 flex flex-1 flex-col items-center justify-center overflow-y-auto rounded-lg bg-gray-100 p-4 text-gray-500 dark:text-slate-500'>
+						<div className='my-6 flex flex-1 flex-col items-center justify-center overflow-y-auto rounded-lg bg-gray-100 p-4 text-gray-500 dark:text-slate-500 dark:bg-gray-900'>
 							<Database size={20} className='' />
 							<p>No cached words</p>
 						</div>

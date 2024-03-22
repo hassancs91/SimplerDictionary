@@ -35,12 +35,13 @@ type TextSpeechType =
 export type CachedWordMeaningsType = Record<string, WordMeaningType>
 
 export default function Home() {
-	const [fontSize, setFontSize] = useState(16)
+	const [fontSize, setFontSize] = useState(20)
 	const [playbackSpeed, setPlaybackSpeed] = useState<number>(1)
 	const [wordMeaning, setWordMeaning] = useState<WordMeaningType | null>(null)
 	const [isSearching, setIsSearching] = useState(false)
 	const [isSpeaking, setIsSpeaking] = useState<TextSpeechType | null>(null)
 	const [cachedWords, setCachedWords] = useState<CachedWordMeaningsType>({})
+	const [readSimpleMeaning, setReadSimpleMeaning] = useState(true)
 	const [word, setWord] = useState<string>('')
 	const [notFound, setNotFound] = useState(false)
 
@@ -63,6 +64,9 @@ export default function Home() {
 
 			setIsSpeaking(text)
 			let readText = wordMeaning[text]
+            if(text === 'detailed_meaning' && readSimpleMeaning) {
+                readText = wordMeaning['simple_meaning']
+            }
 			const utterance = new SpeechSynthesisUtterance(readText)
 			utterance.rate = playbackSpeed
 
@@ -138,7 +142,7 @@ export default function Home() {
 				setClickedWord={(word) => {
 					setWordMeaning(cachedWords[word])
 					setWord(word)
-                    setNotFound(false)
+					setNotFound(false)
 				}}
 				cachedWords={cachedWords}
 				resetCachedWords={() => setCachedWords({})}
@@ -148,7 +152,7 @@ export default function Home() {
 					setClickedWord={(word) => {
 						setWordMeaning(cachedWords[word])
 						setWord(word)
-                        setNotFound(false)
+						setNotFound(false)
 					}}
 					setFontSize={(size) => setFontSize(size)}
 					cachedWords={cachedWords}
@@ -173,6 +177,7 @@ export default function Home() {
 									setWord(e.target.value)
 									setNotFound(false)
 								}}
+								style={{ fontSize: 20 }}
 								className='flex-1 focus-visible:ring-gray-200 dark:focus-visible:ring-slate-800 md:mb-6'
 								placeholder='Type a word...'
 							/>
@@ -235,7 +240,13 @@ export default function Home() {
 										className='!w-full pr-8'
 									>
 										<AccordionItem value='item-1'>
-											<AccordionTrigger>
+											<AccordionTrigger
+												onClick={() =>
+													setReadSimpleMeaning(
+														(prev) => !prev
+													)
+												}
+											>
 												<p
 													style={{
 														fontSize: fontSize
