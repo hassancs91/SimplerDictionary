@@ -4,6 +4,7 @@ import './globals.css'
 import Navbar from '@/components/layout/navbar'
 import Footer from '@/components/layout/footer'
 import { ThemeProvider } from '@/providers/theme-provider'
+import { Toaster } from 'sonner'
 
 const inter = Inter({ subsets: ['latin'] })
 const aBeeZee = ABeeZee({ subsets: ['latin'], weight: ['400'] })
@@ -47,6 +48,19 @@ export default function RootLayout({
 					defaultTheme='light'
 					disableTransitionOnChange
 				>
+					<Toaster
+						toastOptions={{
+							unstyled: true,
+							classNames: {
+								error: 'p-4 rounded-lg border border-red-700 gap-2 flex items-center text-sm text-red-700 bg-red-200',
+								success:
+									'p-4 rounded-lg border border-green-700 gap-2 flex items-center text-sm text-green-700 bg-green-200',
+								warning:
+									'p-4 rounded-lg border border-yellow-700 gap-2 flex items-center text-sm text-yellow-700 bg-yellow-200',
+								info: 'p-4 rounded-lg border border-blue-700 gap-2 flex items-center text-sm bg-blue-200 text-blue-700'
+							}
+						}}
+					/>
 					<main className='max-w-screen flex h-screen flex-1 flex-col antialiased'>
 						<Navbar />
 						{children}

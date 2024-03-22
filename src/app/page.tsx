@@ -8,7 +8,14 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { Speech, Volume2 } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
+import { toast } from 'sonner'
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger
+} from '@/components/ui/accordion'
 
 type WordMeaningType = {
 	user_input: string
@@ -31,6 +38,8 @@ export default function Home() {
 	const [wordMeaning, setWordMeaning] = useState<WordMeaningType | null>(null)
 	const [isSearching, setIsSearching] = useState(false)
 	const [isSpeaking, setIsSpeaking] = useState<TextSpeechType | null>(null)
+	const [word, setWord] = useState<string>('')
+	const [notFound, setNotFound] = useState(false)
 
 	const speakText = (
 		text:
@@ -68,12 +77,24 @@ export default function Home() {
 		}
 	}
 
-	const getMeaning = async () => {
+	const getMeaning = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+        setWordMeaning(null)
+
+		if (!word) {
+			toast.error('Please enter a word to search!')
+			return
+		}
 		setIsSearching(true)
 
-		let response = await getWordMeaning('hello')
-		setWordMeaning(response)
+		let response = await getWordMeaning(word)
+		if (!response) {
+			setNotFound(true)
+			setIsSearching(false)
+			return
+		}
 
+		setWordMeaning(response)
 		setIsSearching(false)
 	}
 
@@ -99,24 +120,35 @@ export default function Home() {
 							Enter your word
 						</h2>
 
-						<div className='mt-4 flex w-full flex-col gap-4 md:flex-row'>
+						<form
+							onSubmit={getMeaning}
+							className='mt-4 flex w-full flex-col gap-4 md:flex-row'
+						>
 							<Input
+								onChange={(e) => {
+									setWord(e.target.value)
+									setNotFound(false)
+								}}
 								className='flex-1 focus-visible:ring-gray-200 dark:focus-visible:ring-slate-800 md:mb-6'
 								placeholder='Type a word...'
 							/>
 							<div className='flex gap-2 md:gap-4'>
 								<Button
-									onClick={getMeaning}
-									disabled={isSearching ? true : false}
+									disabled={
+										isSearching || isSpeaking ? true : false
+									}
 									className='flex-1 disabled:cursor-not-allowed dark:text-slate-200'
 									variant='outline'
 								>
 									{isSearching ? 'Searching...' : 'Search'}
 								</Button>
-								<span
+								<button
 									onClick={() => speakText('corrected_word')}
+									disabled={
+										isSearching || isSpeaking ? true : false
+									}
 									className={cn(
-										'h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'
+										'h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 disabled:cursor-not-allowed dark:bg-slate-800'
 									)}
 								>
 									{isSpeaking == 'corrected_word' ? (
@@ -124,35 +156,82 @@ export default function Home() {
 									) : (
 										<Volume2 className='text-gray-500 dark:text-slate-500' />
 									)}
-								</span>
+								</button>
 							</div>
+						</form>
+
+						<div
+							className={cn(
+								'hidden w-full items-center justify-between rounded-lg p-4 dark:bg-slate-900',
+								{ flex: notFound }
+							)}
+						>
+							<p>"{word}" was not found!</p>
+							<button
+								onClick={() => setNotFound(false)}
+								className='rounded-lg p-2 hover:opacity-80 active:opacity-100 dark:bg-background'
+							>
+								Report
+							</button>
 						</div>
 
 						<div className='my-4 mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white md:mt-0'>
-							<div className='flex flex-col'>
+							<div className='flex w-full flex-col'>
 								<p
 									style={{ fontSize: fontSize }}
 									className='font-[500] dark:text-slate-200'
 								>
 									Meaning :
 								</p>
-								<p
-									style={{ fontSize: fontSize }}
-									className='text-xl lg:flex-row'
-								>
-									{wordMeaning?.detailed_meaning}
-								</p>
+
+								{wordMeaning?.simple_meaning && (
+									<Accordion
+										type='single'
+										collapsible
+										className='!w-full pr-8'
+									>
+										<AccordionItem value='item-1'>
+											<AccordionTrigger>
+												<p
+													style={{
+														fontSize: fontSize
+													}}
+													className='text-xl lg:flex-row'
+												>
+													{
+														wordMeaning?.simple_meaning
+													}
+												</p>
+											</AccordionTrigger>
+											<AccordionContent className='!w-full'>
+												<p
+													style={{
+														fontSize: fontSize
+													}}
+													className='text-xl lg:flex-row'
+												>
+													{
+														wordMeaning?.detailed_meaning
+													}
+												</p>
+											</AccordionContent>
+										</AccordionItem>
+									</Accordion>
+								)}
 							</div>
-							<span
+							<button
 								onClick={() => speakText('detailed_meaning')}
-								className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'
+								disabled={
+									isSearching || isSpeaking ? true : false
+								}
+								className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 disabled:cursor-not-allowed dark:bg-slate-800'
 							>
 								{isSpeaking == 'detailed_meaning' ? (
 									<Speech className='text-gray-500 dark:text-slate-500' />
 								) : (
 									<Volume2 className='text-gray-500 dark:text-slate-500' />
 								)}
-							</span>
+							</button>
 						</div>
 
 						<div
@@ -206,16 +285,19 @@ export default function Home() {
 									{wordMeaning?.sentence}
 								</p>
 							</div>
-							<span
+							<button
 								onClick={() => speakText('sentence')}
-								className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 dark:bg-slate-800'
+								disabled={
+									isSearching || isSpeaking ? true : false
+								}
+								className='h-fit cursor-pointer select-none rounded-full bg-gray-100 p-2 hover:opacity-80 active:bg-gray-200 disabled:cursor-not-allowed dark:bg-slate-800'
 							>
 								{isSpeaking == 'sentence' ? (
 									<Speech className='text-gray-500 dark:text-slate-500' />
 								) : (
 									<Volume2 className='text-gray-500 dark:text-slate-500' />
 								)}
-							</span>
+							</button>
 						</div>
 					</div>
 				</section>

@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'storage.freeaikit.com',
+        hostname: 'pictures.simplerdictionary.com',
         port: '',
       },
     ],
