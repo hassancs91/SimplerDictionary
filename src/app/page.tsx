@@ -291,7 +291,7 @@ export default function Home() {
 
 						<div
 							draggable={false}
-							className='mb-4 grid select-none grid-cols-3 gap-4'
+							className='mb-4 grid w-full md:w-fit select-none md:grid-cols-3 gap-4'
 						>
 							<Image
 								src={
@@ -301,7 +301,7 @@ export default function Home() {
 								width='250'
 								draggable={false}
 								alt='Meaning related image'
-								className='aspect-square'
+								className='aspect-square w-full'
 							/>
 							<Image
 								src={
@@ -311,7 +311,7 @@ export default function Home() {
 								height='250'
 								draggable={false}
 								alt='Meaning related image'
-								className='aspect-square'
+								className='aspect-square w-full'
 							/>
 							<Image
 								src={
@@ -321,7 +321,7 @@ export default function Home() {
 								width='250'
 								draggable={false}
 								alt='Meaning related image'
-								className='aspect-square'
+								className='aspect-square w-full'
 							/>
 						</div>
 
