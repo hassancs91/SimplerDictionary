@@ -75,12 +75,3 @@
   }
 }
 
-
-/* Hide scrollbar for all browsers */
-::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for WebKit browsers */
-}
-
-* {
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-}

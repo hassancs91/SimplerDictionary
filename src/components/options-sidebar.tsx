@@ -110,7 +110,7 @@ export default function Options({
 						max={26}
 						onChange={(e) => setFontSize(parseInt(e.target.value))}
 						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
-                        value={fontSize}
+						value={fontSize}
 						type='range'
 					/>
 					<span className='rounded-full bg-gray-200 px-2 py-1 text-sm font-medium text-gray-700 dark:bg-slate-800 dark:text-slate-500'>
@@ -119,13 +119,19 @@ export default function Options({
 				</div>
 
 				{Object.keys(cachedWords).length > 0 ? (
-					<div className='my-6 flex-1 overflow-y-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-4'>
+					<div
+						className='my-6 h-[280px] overflow-y-scroll rounded-lg bg-gray-100 p-4 dark:bg-gray-800'
+						style={{
+							scrollbarWidth: 'auto',
+							msOverflowStyle: 'auto'
+						}}
+					>
 						{Object.keys(cachedWords).map((word: string) => {
 							return (
 								<p
 									onClick={() => setClickedWord(word)}
 									key={word}
-									className='cursor-pointer p-1 text-sm font-medium capitalize text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-background dark:active:bg-gray-900 rounded'
+									className='cursor-pointer rounded p-1 text-sm font-medium capitalize text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-background dark:active:bg-gray-900'
 								>
 									{word}
 								</p>
@@ -133,7 +139,7 @@ export default function Options({
 						})}
 					</div>
 				) : (
-					<div className='my-6 flex flex-1 flex-col items-center justify-center overflow-y-auto rounded-lg bg-gray-100 p-4 text-gray-500 dark:text-slate-500 dark:bg-gray-900'>
+					<div className='my-6 flex flex-1 flex-col items-center justify-center overflow-y-auto rounded-lg bg-gray-100 p-4 text-gray-500 dark:bg-gray-900 dark:text-slate-500'>
 						<Database size={20} className='' />
 						<p>No cached words</p>
 					</div>

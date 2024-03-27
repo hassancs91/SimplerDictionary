@@ -16,6 +16,16 @@ import {
 	AccordionItem,
 	AccordionTrigger
 } from '@/components/ui/accordion'
+import { SelectVoice } from '@/components/choose-voice'
+
+// Setup voices
+import EasySpeech from 'easy-speech'
+
+EasySpeech.detect()
+
+EasySpeech.init({ maxTimeout: 5000, interval: 250 })
+	.then(() => console.debug('load complete'))
+	.catch((e) => console.error(e))
 
 type WordMeaningType = {
 	user_input: string
@@ -44,8 +54,12 @@ export default function Home() {
 	const [readSimpleMeaning, setReadSimpleMeaning] = useState(true)
 	const [word, setWord] = useState<string>('')
 	const [notFound, setNotFound] = useState(false)
+	const [availableVoices, setAvailableVoices] = useState<
+		SpeechSynthesisVoice[]
+	>([])
+	const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice>()
 
-	const speakText = (
+	const speakText = async (
 		text:
 			| 'corrected_word'
 			| 'simple_meaning'
@@ -55,32 +69,26 @@ export default function Home() {
 		if ('speechSynthesis' in window) {
 			const synth = window.speechSynthesis
 			if (!wordMeaning) {
-				const utterance = new SpeechSynthesisUtterance(
-					'No text to read! Please search word again.'
-				)
-				synth.speak(utterance)
+				await EasySpeech.speak({
+					text: 'No text to read! Please search word again.',
+					voice: selectedVoice,
+					rate: playbackSpeed
+				})
 				return
 			}
 
 			setIsSpeaking(text)
 			let readText = wordMeaning[text]
-            if(text === 'detailed_meaning' && readSimpleMeaning) {
-                readText = wordMeaning['simple_meaning']
-            }
-			const utterance = new SpeechSynthesisUtterance(readText)
-			utterance.rate = playbackSpeed
-
-			// Event handler for when the speech has finished
-			utterance.onend = () => {
-				setIsSpeaking(null)
+			if (text === 'detailed_meaning' && readSimpleMeaning) {
+				readText = wordMeaning['simple_meaning']
 			}
-
-			// Also consider handling errors
-			utterance.onerror = () => {
-				setIsSpeaking(null)
-			}
-
-			synth.speak(utterance)
+			await EasySpeech.speak({
+				text: readText,
+				voice: selectedVoice,
+				rate: playbackSpeed,
+				end: () => setIsSpeaking(null),
+				error: () => setIsSpeaking(null)
+			})
 		}
 	}
 
@@ -124,12 +132,20 @@ export default function Home() {
 		setIsSearching(false)
 	}
 
+	async function getVoices() {
+		let availableVoices = EasySpeech.voices()
+
+		setAvailableVoices(availableVoices)
+	}
+
 	useEffect(() => {
 		// Load cached word meanings on component mount
 		const cachedWordMeanings = localStorage.getItem('cachedWords')
 		if (cachedWordMeanings) {
 			setCachedWords(JSON.parse(cachedWordMeanings))
 		}
+
+		getVoices()
 	}, [])
 
 	return (
@@ -177,6 +193,7 @@ export default function Home() {
 									setWord(e.target.value)
 									setNotFound(false)
 								}}
+								value={word}
 								style={{ fontSize: 20 }}
 								className='flex-1 focus-visible:ring-gray-200 dark:focus-visible:ring-slate-800 md:mb-6'
 								placeholder='Type a word...'
@@ -193,6 +210,7 @@ export default function Home() {
 								</Button>
 								<button
 									onClick={() => speakText('corrected_word')}
+                                    type='button'
 									disabled={
 										isSearching || isSpeaking ? true : false
 									}
@@ -208,6 +226,16 @@ export default function Home() {
 								</button>
 							</div>
 						</form>
+
+						{availableVoices.length > 0 && (
+							<div className='mt-4 flex w-full items-end md:mt-0'>
+								<SelectVoice
+									availabeVoices={availableVoices}
+									selectedVoice={selectedVoice!}
+									setSelectedVoice={setSelectedVoice}
+								/>
+							</div>
+						)}
 
 						<div
 							className={cn(
@@ -291,7 +319,7 @@ export default function Home() {
 
 						<div
 							draggable={false}
-							className='mb-4 grid w-full md:w-fit select-none md:grid-cols-3 gap-4'
+							className='mb-4 grid w-full select-none gap-4 md:w-fit md:grid-cols-3'
 						>
 							<Image
 								src={

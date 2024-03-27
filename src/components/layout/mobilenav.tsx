@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import { Database, Settings } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { cache, useState } from 'react'
 import { Switch } from '../ui/switch'
 import { useTheme } from 'next-themes'
 import { Label } from '../ui/label'
@@ -125,8 +125,8 @@ const MobileNavbar = ({
 						</span>
 					</div>
 
-					{Object.keys(cachedWords).length > 0 ? (
-						<div className='my-6 flex-1 overflow-y-auto rounded-lg bg-gray-100 dark:bg-gray-800 p-4'>
+					{Object.keys(cachedWords).length > 0  ? (
+						<div className='my-6 overflow-y-scroll h-[130px] rounded-lg bg-gray-100 dark:bg-gray-800 p-4'>
 							{Object.keys(cachedWords).map((word: string) => {
 								return (
 									<p
@@ -140,7 +140,7 @@ const MobileNavbar = ({
 							})}
 						</div>
 					) : (
-						<div className='my-6 flex flex-1 flex-col items-center justify-center overflow-y-auto rounded-lg bg-gray-100 p-4 text-gray-500 dark:text-slate-500 dark:bg-gray-900'>
+						<div className='my-6 flex flex-1 flex-col items-center justify-center rounded-lg bg-gray-100 p-4 text-gray-500 dark:text-slate-500 dark:bg-gray-900'>
 							<Database size={20} className='' />
 							<p>No cached words</p>
 						</div>
