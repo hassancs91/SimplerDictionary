@@ -67,17 +67,23 @@ export default function Home() {
 			| 'sentence'
 	) => {
 		if ('speechSynthesis' in window) {
+			setIsSpeaking(text)
 			const synth = window.speechSynthesis
 			if (!wordMeaning) {
 				await EasySpeech.speak({
-					text: 'No text to read! Please search word again.',
+					text: notFound
+						? `We could not find the meaning of ${word}. Please report missing word`
+						: 'No text to read! Please search word again.',
 					voice: selectedVoice,
 					rate: playbackSpeed
 				})
+
+				setIsSpeaking(null)
 				return
 			}
 
-			setIsSpeaking(text)
+			console.log(text)
+
 			let readText = wordMeaning[text]
 			if (text === 'detailed_meaning' && readSimpleMeaning) {
 				readText = wordMeaning['simple_meaning']
@@ -89,6 +95,8 @@ export default function Home() {
 				end: () => setIsSpeaking(null),
 				error: () => setIsSpeaking(null)
 			})
+
+			setIsSpeaking(null)
 		}
 	}
 
@@ -210,7 +218,7 @@ export default function Home() {
 								</Button>
 								<button
 									onClick={() => speakText('corrected_word')}
-                                    type='button'
+									type='button'
 									disabled={
 										isSearching || isSpeaking ? true : false
 									}
@@ -228,7 +236,12 @@ export default function Home() {
 						</form>
 
 						{availableVoices.length > 0 && (
-							<div className='mt-4 flex w-full items-end md:mt-0'>
+							<div
+								className={cn(
+									'mt-4 flex w-full items-end md:mt-0',
+									{ 'md:mb-4': notFound }
+								)}
+							>
 								<SelectVoice
 									availabeVoices={availableVoices}
 									selectedVoice={selectedVoice!}
@@ -286,7 +299,7 @@ export default function Home() {
 													}
 												</p>
 											</AccordionTrigger>
-											<AccordionContent className='!w-full'>
+											<AccordionContent className='mt-2 !w-full border-t py-2'>
 												<p
 													style={{
 														fontSize: fontSize
