@@ -23,7 +23,7 @@ import EasySpeech from 'easy-speech'
 
 EasySpeech.detect()
 
-EasySpeech.init({ maxTimeout: 5000, interval: 250 })
+EasySpeech.init({ maxTimeout: 5000, interval: 250})
 	.then(() => console.debug('load complete'))
 	.catch((e) => console.error(e))
 
@@ -75,7 +75,7 @@ export default function Home() {
 						? `We could not find the meaning of ${word}. Please report missing word`
 						: 'No text to read! Please search word again.',
 					voice: selectedVoice,
-					rate: playbackSpeed
+					rate: playbackSpeed,
 				})
 
 				setIsSpeaking(null)
@@ -142,8 +142,10 @@ export default function Home() {
 
 	async function getVoices() {
 		let availableVoices = EasySpeech.voices()
+       console.log(availableVoices)
 
 		setAvailableVoices(availableVoices)
+
 	}
 
 	useEffect(() => {

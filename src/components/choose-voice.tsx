@@ -16,6 +16,7 @@ import {
 	CommandInput,
 	CommandItem
 } from '@/components/ui/command'
+import { toast } from 'sonner'
 
 type SelectVoiceProps = {
 	setSelectedVoice: React.Dispatch<React.SetStateAction<SpeechSynthesisVoice | undefined>>
@@ -32,9 +33,9 @@ export function SelectVoice({
 
 	let voices = availabeVoices.map((voice) => voice.name)
 
-	function handleVoiceChange(voiceURI: string) {
+	function handleVoiceChange(voiceName: string) {
 		const voice = availabeVoices.find(
-			(voice) => voice.voiceURI.toLowerCase() === voiceURI
+			(voice) => voice.name.toLowerCase() === voiceName.toLowerCase()
 		)
 
 		if (voice) {
@@ -57,7 +58,7 @@ export function SelectVoice({
 					aria-expanded={open}
 					className='w-[200px] justify-between'
 				>
-					{selectedVoice?.voiceURI || 'Select a voice'}
+					{selectedVoice?.name || 'Select a voice'}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>
