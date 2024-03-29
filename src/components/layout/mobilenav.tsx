@@ -1,13 +1,14 @@
 import { cn } from '@/lib/utils'
 import { Database, Settings } from 'lucide-react'
 import Link from 'next/link'
-import { cache, useState } from 'react'
+import { cache, useEffect, useRef, useState } from 'react'
 import { Switch } from '../ui/switch'
 import { useTheme } from 'next-themes'
 import { Label } from '../ui/label'
 import { Button } from '../ui/button'
 import { CachedWordMeaningsType } from '@/app/page'
 import { toast } from 'sonner'
+import { SelectVoice } from '../choose-voice'
 
 type MobileNavProps = {
 	setFontSize: (size: number) => void
@@ -17,6 +18,11 @@ type MobileNavProps = {
 	cachedWords: CachedWordMeaningsType
 	resetCachedWords: () => void
 	setClickedWord: (word: string) => void
+	setSelectedVoice: React.Dispatch<
+		React.SetStateAction<SpeechSynthesisVoice | undefined>
+	>
+	availableVoices: SpeechSynthesisVoice[]
+	selectedVoice: SpeechSynthesisVoice
 }
 
 const MobileNavbar = ({
@@ -26,15 +32,36 @@ const MobileNavbar = ({
 	fontSize,
 	resetCachedWords,
 	cachedWords,
-	setClickedWord
+	setClickedWord,
+	setSelectedVoice,
+	availableVoices,
+	selectedVoice
 }: MobileNavProps) => {
 	const [isOpen, setIsOpen] = useState(false)
 	const { setTheme } = useTheme()
+	const modalRef = useRef<HTMLElement | null>(null)
 
 	const clearCache = () => {
 		localStorage.removeItem('cachedWords')
 		resetCachedWords()
 		toast.success('Cache cleared!')
+	}
+
+	const handleClickOutside = (event: MouseEvent) => {
+        console.log('event', event.target)
+		if (
+			modalRef.current &&
+			!modalRef.current.contains(event.target as Node)
+		) {
+			setIsOpen(false)
+		}
+
+		useEffect(() => {
+			document.addEventListener('mousedown', handleClickOutside)
+			return () => {
+				document.removeEventListener('mousedown', handleClickOutside)
+			}
+		}, [isOpen])
 	}
 	return (
 		<header className='flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-800 md:hidden'>
@@ -51,10 +78,11 @@ const MobileNavbar = ({
 			</span>
 
 			<nav
+				ref={modalRef}
 				className={cn(
-					'transition-width hidden w-0 flex-col rounded border border-gray-200 bg-white duration-300 dark:border-slate-800 dark:bg-background',
+					'transition-width hidden w-0 flex-col rounded border border-gray-200 bg-white duration-300 dark:border-slate-800 bg-background',
 					{
-						'absolute left-0 top-[60px] flex h-[80%] w-64 border-r p-4':
+						'absolute bottom-0 left-0 top-[60px] flex w-64 border-r p-4':
 							isOpen
 					}
 				)}
@@ -116,7 +144,7 @@ const MobileNavbar = ({
 							onChange={(e) =>
 								setFontSize(parseInt(e.target.value))
 							}
-                            value={fontSize}
+							value={fontSize}
 							className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
 							type='range'
 						/>
@@ -125,14 +153,26 @@ const MobileNavbar = ({
 						</span>
 					</div>
 
-					{Object.keys(cachedWords).length > 0  ? (
-						<div className='my-6 overflow-y-scroll h-[130px] rounded-lg bg-gray-100 dark:bg-gray-800 p-4'>
+					{availableVoices.length > 0 && (
+						<div
+							className={cn('mt-4 flex w-full items-end md:mt-0')}
+						>
+							<SelectVoice
+								availabeVoices={availableVoices}
+								selectedVoice={selectedVoice!}
+								setSelectedVoice={setSelectedVoice}
+							/>
+						</div>
+					)}
+
+					{Object.keys(cachedWords).length > 0 ? (
+						<div className='my-6 h-[130px] overflow-y-scroll rounded-lg bg-gray-100 p-4 dark:bg-gray-800'>
 							{Object.keys(cachedWords).map((word: string) => {
 								return (
 									<p
 										onClick={() => setClickedWord(word)}
 										key={word}
-										className='cursor-pointer p-1 text-sm font-medium capitalize text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-background dark:active:bg-gray-900 rounded'
+										className='cursor-pointer rounded p-1 text-sm font-medium capitalize text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-background dark:active:bg-gray-900'
 									>
 										{word}
 									</p>
@@ -140,7 +180,7 @@ const MobileNavbar = ({
 							})}
 						</div>
 					) : (
-						<div className='my-6 flex flex-1 flex-col items-center justify-center rounded-lg bg-gray-100 p-4 text-gray-500 dark:text-slate-500 dark:bg-gray-900'>
+						<div className='my-6 flex flex-1 flex-col items-center justify-center rounded-lg bg-gray-100 p-4 text-gray-500 dark:bg-gray-900 dark:text-slate-500'>
 							<Database size={20} className='' />
 							<p>No cached words</p>
 						</div>

@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { useTheme } from 'next-themes'
 import { CachedWordMeaningsType } from '@/app/page'
 import { toast } from 'sonner'
+import { SelectVoice } from './choose-voice'
 
 type OptionsProps = {
 	setFontSize: (size: number) => void
@@ -17,6 +18,11 @@ type OptionsProps = {
 	cachedWords: CachedWordMeaningsType
 	resetCachedWords: () => void
 	setClickedWord: (word: string) => void
+	setSelectedVoice: React.Dispatch<
+		React.SetStateAction<SpeechSynthesisVoice | undefined>
+	>
+	availableVoices: SpeechSynthesisVoice[]
+	selectedVoice: SpeechSynthesisVoice
 }
 
 export default function Options({
@@ -26,7 +32,10 @@ export default function Options({
 	fontSize,
 	cachedWords,
 	resetCachedWords,
-	setClickedWord
+	setClickedWord,
+	setSelectedVoice,
+	availableVoices,
+	selectedVoice
 }: OptionsProps) {
 	const [isOpen, setIsOpen] = useState(true)
 	const { setTheme } = useTheme()
@@ -117,6 +126,16 @@ export default function Options({
 						{fontSize}
 					</span>
 				</div>
+
+				{availableVoices.length > 0 && (
+					<div className={cn('mt-4 flex w-full items-end')}>
+						<SelectVoice
+							availabeVoices={availableVoices}
+							selectedVoice={selectedVoice!}
+							setSelectedVoice={setSelectedVoice}
+						/>
+					</div>
+				)}
 
 				{Object.keys(cachedWords).length > 0 ? (
 					<div

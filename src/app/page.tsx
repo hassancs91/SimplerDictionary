@@ -23,7 +23,7 @@ import EasySpeech from 'easy-speech'
 
 EasySpeech.detect()
 
-EasySpeech.init({ maxTimeout: 5000, interval: 250})
+EasySpeech.init({ maxTimeout: 5000, interval: 250 })
 	.then(() => console.debug('load complete'))
 	.catch((e) => console.error(e))
 
@@ -68,21 +68,19 @@ export default function Home() {
 	) => {
 		if ('speechSynthesis' in window) {
 			setIsSpeaking(text)
-			const synth = window.speechSynthesis
+
 			if (!wordMeaning) {
 				await EasySpeech.speak({
 					text: notFound
 						? `We could not find the meaning of ${word}. Please report missing word`
 						: 'No text to read! Please search word again.',
 					voice: selectedVoice,
-					rate: playbackSpeed,
+					rate: playbackSpeed
 				})
 
 				setIsSpeaking(null)
 				return
 			}
-
-			console.log(text)
 
 			let readText = wordMeaning[text]
 			if (text === 'detailed_meaning' && readSimpleMeaning) {
@@ -142,10 +140,9 @@ export default function Home() {
 
 	async function getVoices() {
 		let availableVoices = EasySpeech.voices()
-       console.log(availableVoices)
+		console.log(availableVoices)
 
 		setAvailableVoices(availableVoices)
-
 	}
 
 	useEffect(() => {
@@ -172,6 +169,10 @@ export default function Home() {
 				}}
 				cachedWords={cachedWords}
 				resetCachedWords={() => setCachedWords({})}
+availableVoices={availableVoices}
+					selectedVoice={selectedVoice!}
+					setSelectedVoice={setSelectedVoice}
+
 			/>
 			<div className='flex flex-1'>
 				<Options
@@ -186,6 +187,9 @@ export default function Home() {
 					setPlaybackSpeed={(speed) => setPlaybackSpeed(speed)}
 					playbackSpeed={playbackSpeed}
 					fontSize={fontSize}
+					availableVoices={availableVoices}
+					selectedVoice={selectedVoice!}
+					setSelectedVoice={setSelectedVoice}
 				/>
 
 				<section className='flex-1 p-6 pt-8 md:px-10 lg:mx-60'>
@@ -236,21 +240,6 @@ export default function Home() {
 								</button>
 							</div>
 						</form>
-
-						{availableVoices.length > 0 && (
-							<div
-								className={cn(
-									'mt-4 flex w-full items-end md:mt-0',
-									{ 'md:mb-4': notFound }
-								)}
-							>
-								<SelectVoice
-									availabeVoices={availableVoices}
-									selectedVoice={selectedVoice!}
-									setSelectedVoice={setSelectedVoice}
-								/>
-							</div>
-						)}
 
 						<div
 							className={cn(

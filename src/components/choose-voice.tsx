@@ -16,7 +16,6 @@ import {
 	CommandInput,
 	CommandItem
 } from '@/components/ui/command'
-import { toast } from 'sonner'
 
 type SelectVoiceProps = {
 	setSelectedVoice: React.Dispatch<React.SetStateAction<SpeechSynthesisVoice | undefined>>
@@ -56,7 +55,7 @@ export function SelectVoice({
 					variant='outline'
 					role='combobox'
 					aria-expanded={open}
-					className='w-[200px] justify-between'
+					className='w-full justify-between'
 				>
 					{selectedVoice?.name || 'Select a voice'}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
