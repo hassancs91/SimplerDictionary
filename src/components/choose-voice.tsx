@@ -55,7 +55,7 @@ export function SelectVoice({
 					variant='outline'
 					role='combobox'
 					aria-expanded={open}
-					className='w-full justify-between'
+					className='w-full justify-between truncate'
 				>
 					{selectedVoice?.name || 'Select a voice'}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
@@ -63,8 +63,8 @@ export function SelectVoice({
 			</PopoverTrigger>
 			<PopoverContent className='w-[200px] p-0'>
 				<Command>
-					<CommandInput placeholder='Search framework...' />
-					<CommandEmpty>No framework found.</CommandEmpty>
+					<CommandInput placeholder='Search voice...' />
+					<CommandEmpty>No voice found.</CommandEmpty>
 					<CommandGroup className='h-[300px] overflow-y-auto'>
 						{voices.map((voice) => (
 							<CommandItem

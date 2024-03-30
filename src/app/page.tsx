@@ -168,10 +168,9 @@ export default function Home() {
 				}}
 				cachedWords={cachedWords}
 				resetCachedWords={() => setCachedWords({})}
-availableVoices={availableVoices}
-					selectedVoice={selectedVoice!}
-					setSelectedVoice={setSelectedVoice}
-
+				availableVoices={availableVoices}
+				selectedVoice={selectedVoice!}
+				setSelectedVoice={setSelectedVoice}
 			/>
 			<div className='flex flex-1'>
 				<Options
@@ -191,7 +190,7 @@ availableVoices={availableVoices}
 					setSelectedVoice={setSelectedVoice}
 				/>
 
-				<section className='flex-1 p-6 pt-8 md:px-10 lg:mx-60'>
+				<section className='flex-1 p-6 pt-8 md:px-10 lg:mx-28 2xl:mx-60'>
 					<div className='flex flex-col items-center'>
 						<h2 className='mb-4 text-center text-4xl font-semibold text-gray-900 dark:text-slate-200 md:text-5xl'>
 							Enter your word

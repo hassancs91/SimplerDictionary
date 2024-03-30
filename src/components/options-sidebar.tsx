@@ -87,8 +87,9 @@ export default function Options({
 					</label>
 					<input
 						min={0.5}
-						max={2.0}
+						max={1.5}
 						step={0.1}
+                        value={playbackSpeed}
 						onChange={(e) =>
 							setPlaybackSpeed(parseFloat(e.target.value))
 						}
@@ -115,7 +116,7 @@ export default function Options({
 						Font size
 					</label>
 					<input
-						min={12}
+						min={14}
 						max={26}
 						onChange={(e) => setFontSize(parseInt(e.target.value))}
 						className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-slate-700'
