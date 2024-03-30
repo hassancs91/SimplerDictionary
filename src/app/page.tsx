@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { Speech, Volume2 } from 'lucide-react'
 import Image from 'next/image'
-import { FormEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import {
 	Accordion,
@@ -16,7 +16,6 @@ import {
 	AccordionItem,
 	AccordionTrigger
 } from '@/components/ui/accordion'
-import { SelectVoice } from '@/components/choose-voice'
 
 // Setup voices
 import EasySpeech from 'easy-speech'
