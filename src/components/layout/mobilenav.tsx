@@ -111,8 +111,10 @@ const MobileNavbar = ({
 					</li>
 					<li>
 						<a
+                        target='_blank'
 							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
-							href='/donate'
+
+									href='https://www.patreon.com/heducate'
 						>
 							Donate
 						</a>
@@ -121,9 +123,7 @@ const MobileNavbar = ({
 						<DropdownMenuTrigger asChild>
 							<li>
 								<a
-									target='_blank'
 									className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
-									href='https://www.patreon.com/heducate'
 								>
 									Others
 								</a>

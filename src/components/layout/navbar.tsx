@@ -45,8 +45,10 @@ function Navbar() {
 						</li>
 						<li>
 							<a
+                            target='_blank'
 								className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
-								href='/donate'
+
+										href='https://www.patreon.com/heducate'
 							>
 								Donate
 							</a>
@@ -55,9 +57,7 @@ function Navbar() {
 							<DropdownMenuTrigger asChild>
 								<li>
 									<a
-										target='_blank'
-										className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
-										href='https://www.patreon.com/heducate'
+										className='rounded p-2 cursor-pointer hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
 									>
 										Others
 									</a>
