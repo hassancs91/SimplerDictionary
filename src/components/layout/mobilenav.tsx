@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
-import { Database, Settings } from 'lucide-react'
+import { Database, ExternalLink, Settings } from 'lucide-react'
 import Link from 'next/link'
-import { cache, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Switch } from '../ui/switch'
 import { useTheme } from 'next-themes'
 import { Label } from '../ui/label'
@@ -9,6 +9,11 @@ import { Button } from '../ui/button'
 import { CachedWordMeaningsType } from '@/app/page'
 import { toast } from 'sonner'
 import { SelectVoice } from '../choose-voice'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 type MobileNavProps = {
 	setFontSize: (size: number) => void
@@ -48,7 +53,7 @@ const MobileNavbar = ({
 	}
 
 	const handleClickOutside = (event: MouseEvent) => {
-        console.log('event', event.target)
+		console.log('event', event.target)
 		if (
 			modalRef.current &&
 			!modalRef.current.contains(event.target as Node)
@@ -80,7 +85,7 @@ const MobileNavbar = ({
 			<nav
 				ref={modalRef}
 				className={cn(
-					'transition-width hidden w-0 flex-col rounded border border-gray-200 bg-white duration-300 dark:border-slate-800 bg-background',
+					'transition-width hidden w-0 flex-col rounded border border-gray-200 bg-background duration-300 dark:border-slate-800',
 					{
 						'absolute bottom-0 left-0 top-[60px] flex w-64 border-r p-4':
 							isOpen
@@ -89,15 +94,68 @@ const MobileNavbar = ({
 			>
 				<ul className='flex flex-col space-y-4 font-[500] text-gray-700'>
 					<li>
-						<Link className='rounded dark:text-slate-200' href='#'>
+						<Link
+							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+							href='/about'
+						>
 							About
 						</Link>
 					</li>
 					<li>
-						<Link className='rounded dark:text-slate-200' href='#'>
+						<Link
+							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+							href='/contact'
+						>
 							Contact
 						</Link>
 					</li>
+					<li>
+						<a
+							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+							href='/donate'
+						>
+							Donate
+						</a>
+					</li>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<li>
+								<a
+									target='_blank'
+									className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+									href='https://www.patreon.com/heducate'
+								>
+									Others
+								</a>
+							</li>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className='mr-8 flex w-40 flex-col gap-2 p-3'>
+							<a
+								href='https://simplerml.com/'
+								target='_blank'
+								className='flex cursor-pointer items-center justify-between gap-1 text-sm hover:underline'
+							>
+								<span>SimplerMl</span>
+								<ExternalLink size={16} />
+							</a>
+							<a
+								href='https://github.com/hassancs91/SimplerLLM'
+								target='_blank'
+								className='flex cursor-pointer items-center justify-between gap-1 text-sm hover:underline'
+							>
+								<span>SimplerLLM</span>
+								<ExternalLink size={16} />
+							</a>
+							<a
+								href='https://learnwithhasan.com/'
+								target='_blank'
+								className='flex cursor-pointer items-center justify-between gap-1 text-sm hover:underline'
+							>
+								<span>Author's Site</span>
+								<ExternalLink size={16} />
+							</a>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</ul>
 
 				<hr className='my-4' />
