@@ -193,7 +193,7 @@ export default function Home() {
 				<section className='flex-1 p-6 pt-8 md:px-10 lg:mx-28 2xl:mx-60'>
 					<div className='flex flex-col items-center'>
 						<h2 className='mb-4 text-center text-4xl font-semibold text-gray-900 dark:text-slate-200 md:text-5xl'>
-							Enter your word
+							Enter your words
 						</h2>
 
 						<form
