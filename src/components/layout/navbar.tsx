@@ -4,10 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {
 	DropdownMenu,
-	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { ExternalLink } from 'lucide-react'
@@ -16,7 +13,7 @@ function Navbar() {
 	return (
 		<>
 			<header className='hidden items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-800 md:flex'>
-				<div className='flex items-center gap-2'>
+				<Link href={'/'} className='flex items-center gap-2'>
 					<Image
 						src='/logo.png'
 						width={500}
@@ -24,10 +21,10 @@ function Navbar() {
 						alt='logo image'
 						className='w-[30px]'
 					/>
-					<h1 className='text-xl font-semibold text-gray-900 dark:text-slate-200'>
+					<h1 className='text-xl font-semibold text-gray-900 hover:opacity-90 dark:text-slate-200'>
 						SimplerDictionary
 					</h1>
-				</div>
+				</Link>
 				<nav>
 					<ul className='flex space-x-2 text-sm'>
 						<li>
