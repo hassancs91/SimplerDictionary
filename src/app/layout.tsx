@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ['latin'] })
 const aBeeZee = ABeeZee({ subsets: ['latin'], weight: ['400'] })
 
 export const metadata: Metadata = {
-	title: 'SimplerDictionary',
-	description: 'The modern dictionary',
+	title: 'AI Powered Dictionary',
+	description: 'An Open-Source Dictionary Powered With AI and SimplerLLM for Everyone!',
 	robots: {
 		index: false,
 		follow: true,

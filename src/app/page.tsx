@@ -1,12 +1,12 @@
 'use client'
 
-import { getWordMeaning } from '@/api/word-search'
+import { getWordMeaning, reportMissingWord } from '@/api/word-search'
 import MobileNavbar from '@/components/layout/mobilenav'
 import Options from '@/components/options-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import { Speech, Volume2 } from 'lucide-react'
+import { Loader, Speech, Volume2 } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -124,11 +124,12 @@ export default function Home() {
 			setIsSearching(false)
 			return
 		}
+		setWord(response.corrected_word)
 
 		// Store the word meaning in local storage
 		const updatedWordMeanings = {
 			...cachedWords,
-			[word]: response
+			[response.corrected_word]: response
 		}
 		localStorage.setItem('cachedWords', JSON.stringify(updatedWordMeanings))
 		setCachedWords(updatedWordMeanings)
@@ -139,9 +140,19 @@ export default function Home() {
 
 	async function getVoices() {
 		let availableVoices = EasySpeech.voices()
-		console.log(availableVoices)
 
 		setAvailableVoices(availableVoices)
+	}
+
+	async function handleNotFound() {
+		setNotFound(false)
+
+		let response = await reportMissingWord(word)
+
+		toast.success(response.message)
+
+		setWordMeaning(null)
+		setWord('')
 	}
 
 	useEffect(() => {
@@ -247,14 +258,14 @@ export default function Home() {
 						>
 							<p>"{word}" was not found!</p>
 							<button
-								onClick={() => setNotFound(false)}
-								className='rounded-lg p-2 hover:opacity-80 active:opacity-100 dark:bg-background'
+								onClick={handleNotFound}
+								className='rounded-lg bg-gray-50 p-2 hover:bg-gray-100 hover:opacity-80 active:opacity-100 dark:bg-background'
 							>
 								Report
 							</button>
 						</div>
 
-						<div className='my-4 mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white md:mt-0'>
+						<div className='my-4 mb-4 flex min-h-[5.6rem] w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white md:mt-0'>
 							<div className='flex w-full flex-col'>
 								<p
 									style={{ fontSize: fontSize }}
@@ -262,6 +273,7 @@ export default function Home() {
 								>
 									Meaning :
 								</p>
+								{isSearching && <p>Loading...</p>}
 
 								{wordMeaning?.simple_meaning && (
 									<Accordion
@@ -323,36 +335,55 @@ export default function Home() {
 							draggable={false}
 							className='mb-4 grid w-full select-none gap-4 md:w-fit md:grid-cols-3'
 						>
-							<Image
-								src={
-									wordMeaning?.images[0] ?? '/placeholder.svg'
-								}
-								height='250'
-								width='250'
-								draggable={false}
-								alt='Meaning related image'
-								className='aspect-square w-full'
-							/>
-							<Image
-								src={
-									wordMeaning?.images[1] ?? '/placeholder.svg'
-								}
-								width='250'
-								height='250'
-								draggable={false}
-								alt='Meaning related image'
-								className='aspect-square w-full'
-							/>
-							<Image
-								src={
-									wordMeaning?.images[2] ?? '/placeholder.svg'
-								}
-								height='250'
-								width='250'
-								draggable={false}
-								alt='Meaning related image'
-								className='aspect-square w-full'
-							/>
+							{isSearching ? (
+								<>
+									<div className='flex h-[249px] w-[249px] items-center justify-center rounded border'>
+										<Loader className='animate-spin text-gray-400' />
+									</div>
+									<div className='flex h-[249px] w-[249px] items-center justify-center rounded border'>
+										<Loader className='animate-spin text-gray-400' />
+									</div>
+									<div className='flex h-[249px] w-[249px] items-center justify-center rounded border'>
+										<Loader className='animate-spin text-gray-400' />
+									</div>
+								</>
+							) : (
+								<>
+									<Image
+										src={
+											wordMeaning?.images[0] ??
+											'/placeholder.svg'
+										}
+										height='250'
+										width='250'
+										draggable={false}
+										alt='Meaning related image'
+										className='aspect-square w-full'
+									/>
+									<Image
+										src={
+											wordMeaning?.images[1] ??
+											'/placeholder.svg'
+										}
+										width='250'
+										height='250'
+										draggable={false}
+										alt='Meaning related image'
+										className='aspect-square w-full'
+									/>
+									<Image
+										src={
+											wordMeaning?.images[2] ??
+											'/placeholder.svg'
+										}
+										height='250'
+										width='250'
+										draggable={false}
+										alt='Meaning related image'
+										className='aspect-square w-full'
+									/>
+								</>
+							)}
 						</div>
 
 						<div className='mb-4 flex w-full items-center justify-between py-4 text-lg text-gray-800 dark:text-white'>
@@ -367,6 +398,8 @@ export default function Home() {
 									style={{ fontSize: fontSize }}
 									className='flex flex-col text-xl lg:flex-row'
 								>
+									{isSearching && <p>Loading...</p>}
+
 									{wordMeaning?.sentence}
 								</p>
 							</div>

@@ -23,3 +23,18 @@ export async function getWordMeaning(word: string) {
 		return null
 	}
 }
+
+export async function reportMissingWord(word: string) {
+	try {
+		const response = await wordApi.post('/report-missing-word', null, {
+			params: {
+				word: word
+			}
+		})
+
+		return response.data
+	} catch (err: any) {
+		console.log(err.response.data.detail)
+		return null
+	}
+}
