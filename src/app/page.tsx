@@ -337,13 +337,13 @@ export default function Home() {
 						>
 							{isSearching ? (
 								<>
-									<div className='flex h-[249px] w-[249px] items-center justify-center rounded border'>
+									<div className='flex h-[249px] w-full items-center justify-center rounded border md:w-[249px]'>
 										<Loader className='animate-spin text-gray-400' />
 									</div>
-									<div className='flex h-[249px] w-[249px] items-center justify-center rounded border'>
+									<div className='flex h-[249px] w-full items-center justify-center rounded border md:w-[249px]'>
 										<Loader className='animate-spin text-gray-400' />
 									</div>
-									<div className='flex h-[249px] w-[249px] items-center justify-center rounded border'>
+									<div className='flex h-[249px] w-full items-center justify-center rounded border md:w-[249px]'>
 										<Loader className='animate-spin text-gray-400' />
 									</div>
 								</>
