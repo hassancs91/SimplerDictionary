@@ -14,6 +14,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import Image from 'next/image'
 
 type MobileNavProps = {
 	setFontSize: (size: number) => void
@@ -70,10 +71,18 @@ const MobileNavbar = ({
 	}
 	return (
 		<header className='flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-800 md:hidden'>
-			<h1 className='text-xl font-semibold text-gray-900 dark:text-slate-200'>
-				SimplerDictionary
-			</h1>
-
+			<Link href={'/'} className='flex items-center gap-2'>
+				<Image
+					src='/logo.png'
+					width={500}
+					height={500}
+					alt='logo image'
+					className='w-[25px]'
+				/>
+				<h1 className='text-lg font-semibold tracking-tighter text-gray-900 hover:opacity-90 dark:text-slate-200'>
+					SimplerDictionary
+				</h1>
+			</Link>
 			<span
 				className={cn(
 					'cursor-pointer select-none text-gray-500 hover:opacity-80 dark:text-slate-500'
@@ -111,10 +120,9 @@ const MobileNavbar = ({
 					</li>
 					<li>
 						<a
-                        target='_blank'
+							target='_blank'
 							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
-
-									href='https://www.patreon.com/heducate'
+							href='https://www.patreon.com/heducate'
 						>
 							Donate
 						</a>
@@ -122,9 +130,7 @@ const MobileNavbar = ({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<li>
-								<a
-									className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
-								>
+								<a className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'>
 									Others
 								</a>
 							</li>
@@ -260,3 +266,102 @@ const MobileNavbar = ({
 }
 
 export default MobileNavbar
+
+export function SimpleMobileNav() {
+	const [isOpen, setIsOpen] = useState(false)
+	const navRef = useRef<HTMLDivElement | null>(null)
+
+	function handleOutsideClick(e: MouseEvent) {
+		if (
+			isOpen &&
+			navRef.current &&
+			!navRef.current.contains(e.target as Node)
+		) {
+			setIsOpen(false)
+		}
+	}
+
+	useEffect(() => {
+		document.addEventListener('click', handleOutsideClick, true)
+
+		return () => {
+			document.removeEventListener('click', handleOutsideClick, true)
+		}
+	}, [isOpen])
+	return (
+		<header className='flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-800 md:hidden'>
+			<Link href={'/'} className='flex items-center gap-2'>
+				<Image
+					src='/logo.png'
+					width={500}
+					height={500}
+					alt='logo image'
+					className='w-[25px]'
+				/>
+				<h1 className='text-lg font-semibold tracking-tighter text-gray-900 hover:opacity-90 dark:text-slate-200'>
+					SimplerDictionary
+				</h1>
+			</Link>
+
+			<nav className='flex items-center font-[500] text-gray-700'>
+				<button
+					onClick={() => setIsOpen((prev) => !prev)}
+					className='rounded-full bg-gray-100 p-1 dark:bg-slate-900 dark:text-slate-500'
+				>
+					<Settings />
+				</button>
+				<div
+					ref={navRef}
+					className={cn(
+						'absolute left-0 top-[3.2rem] mt-3 hidden h-[75vh] w-64  flex-col rounded-none rounded-r-lg border bg-background px-4 pb-12 pt-2 text-gray-700 shadow-none dark:text-slate-200',
+						{ flex: isOpen }
+					)}
+				>
+					<Link
+						className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+						href='/about'
+					>
+						About
+					</Link>
+					<Link
+						className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+						href='/contact'
+					>
+						Contact
+					</Link>
+					<a
+						target='_blank'
+						className='flex items-center justify-between rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+						href='https://www.patreon.com/heducate'
+					>
+						Donate
+					</a>
+					<a
+						href='https://simplerml.com/'
+						target='_blank'
+						className='flex items-center justify-between rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+					>
+						<span>SimplerMl</span>
+						<ExternalLink size={16} />
+					</a>
+					<a
+						href='https://github.com/hassancs91/SimplerLLM'
+						target='_blank'
+						className='flex items-center justify-between rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+					>
+						<span>SimplerLLM</span>
+						<ExternalLink size={16} />
+					</a>
+					<a
+						href='https://learnwithhasan.com/'
+						target='_blank'
+						className='flex items-center justify-between rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+					>
+						<span>Author's Site</span>
+						<ExternalLink size={16} />
+					</a>
+				</div>
+			</nav>
+		</header>
+	)
+}
