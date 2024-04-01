@@ -27,6 +27,14 @@ function Navbar() {
 				</Link>
 				<nav>
 					<ul className='flex space-x-2 text-sm'>
+<li>
+							<Link
+								className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+								href='/'
+							>
+								Home
+							</Link>
+						</li>
 						<li>
 							<Link
 								className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
@@ -59,7 +67,7 @@ function Navbar() {
 									<a
 										className='rounded p-2 cursor-pointer hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
 									>
-										Others
+										More
 									</a>
 								</li>
 							</DropdownMenuTrigger>
