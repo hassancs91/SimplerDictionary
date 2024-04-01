@@ -1,14 +1,18 @@
 # Simpler Dictionary
 
-Welcome to SimplerDictionary! This is a Next.js project aimed at providing a simpler way to search for word definitions.
+Welcome to SimplerDictionary! Powered by AI, uses [SimplerLLM](https://github.com/hassancs91/SimplerLLM) and GPT-4 for
+clear, easy-to-understand word definitions. It also includes attractive images
+made by Stable Diffusion for better comprehension.
 
 ## Getting Started
 
-To get a local copy of this project up and running on your machine, follow these steps:
+To get a local copy of this project up and running on your machine, follow these
+steps:
 
 ### Prerequisites
 
-Before you begin, make sure you have Node.js installed on your machine. You can download and install it from [here](https://nodejs.org/).
+Before you begin, make sure you have Node.js installed on your machine. You can
+download and install it from [here](https://nodejs.org/).
 
 ### Installation
 
@@ -26,7 +30,8 @@ Before you begin, make sure you have Node.js installed on your machine. You can 
 
 ### Installing Dependencies
 
-Now, you'll need to install project dependencies. This project supports three package managers: `npm`, `pnpm`, and `yarn`. Choose the one you prefer.
+Now, you'll need to install project dependencies. This project supports three
+package managers: `npm`, `pnpm`, and `yarn`. Choose the one you prefer.
 
 #### Using npm
 
@@ -54,7 +59,8 @@ yarn install
 
 ### Running the Project
 
-Once you've installed the dependencies, you can run the project using the following command:
+Once you've installed the dependencies, you can run the project using the
+following command:
 
 ```bash
 npm run dev
@@ -64,4 +70,5 @@ This will start the development server on `http://localhost:3000`.
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a pull request if you have any ideas or suggestions.
+Contributions are welcome! Feel free to open an issue or submit a pull request
+if you have any ideas or suggestions.
