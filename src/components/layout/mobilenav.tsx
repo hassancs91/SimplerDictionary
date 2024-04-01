@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { Database, ExternalLink, Settings } from 'lucide-react'
+import { Database, ExternalLink, Settings, X } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { Switch } from '../ui/switch'
@@ -54,21 +54,22 @@ const MobileNavbar = ({
 	}
 
 	const handleClickOutside = (event: MouseEvent) => {
-		console.log('event', event.target)
 		if (
+			isOpen &&
 			modalRef.current &&
 			!modalRef.current.contains(event.target as Node)
 		) {
 			setIsOpen(false)
 		}
-
-		useEffect(() => {
-			document.addEventListener('mousedown', handleClickOutside)
-			return () => {
-				document.removeEventListener('mousedown', handleClickOutside)
-			}
-		}, [isOpen])
 	}
+
+	useEffect(() => {
+		document.addEventListener('click', handleClickOutside, true)
+		return () => {
+			document.removeEventListener('click', handleClickOutside, true)
+		}
+	}, [isOpen])
+
 	return (
 		<header className='flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-slate-800 md:hidden'>
 			<Link href={'/'} className='flex items-center gap-2'>
@@ -90,18 +91,30 @@ const MobileNavbar = ({
 			>
 				<Settings onClick={() => setIsOpen((prev) => !prev)} />
 			</span>
-
+			{isOpen && (
+				<div className='fixed bottom-0 left-0 right-0 top-0 z-10 overflow-hidden bg-black/40'></div>
+			)}
 			<nav
 				ref={modalRef}
 				className={cn(
-					'transition-width hidden w-0 flex-col rounded border border-gray-200 bg-background duration-300 dark:border-slate-800',
+					'transition-width z-20 hidden h-full w-0 flex-col overflow-y-auto rounded border border-gray-200 bg-background duration-300 dark:border-slate-800',
 					{
-						'absolute bottom-0 left-0 top-[60px] flex w-64 border-r p-4':
+						'fixed bottom-0 left-0 top-0 flex w-64 border-r p-4':
 							isOpen
 					}
 				)}
 			>
-				<ul className='flex flex-col space-y-4 font-[500] text-gray-700'>
+				<div className='flex items-center justify-between gap-2'>
+					<h1 className='text-lg font-semibold tracking-tighter text-gray-900 hover:opacity-90 dark:text-slate-200'>
+						SimplerDictionary
+					</h1>{' '}
+					<X
+						onClick={() => setIsOpen(false)}
+						className='rounded-md border text-gray-700 dark:text-slate-400'
+					/>
+				</div>
+
+				<ul className='mt-4 flex flex-col space-y-4 font-[500] text-gray-700'>
 					<li>
 						<Link
 							className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
@@ -131,7 +144,7 @@ const MobileNavbar = ({
 						<DropdownMenuTrigger asChild>
 							<li>
 								<a className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'>
-									Others
+									More
 								</a>
 							</li>
 						</DropdownMenuTrigger>
@@ -310,13 +323,33 @@ export function SimpleMobileNav() {
 				>
 					<Settings />
 				</button>
+				{isOpen && (
+					<div className='fixed bottom-0 left-0 right-0 top-0 z-10 overflow-hidden bg-black/40'></div>
+				)}
+
 				<div
 					ref={navRef}
 					className={cn(
-						'absolute left-0 top-[3.2rem] mt-3 hidden h-[75vh] w-64  flex-col rounded-none rounded-r-lg border bg-background px-4 pb-12 pt-2 text-gray-700 shadow-none dark:text-slate-200',
+						'fixed left-0 top-0 z-20 hidden h-full w-64  flex-col rounded-none rounded-r-lg border bg-background px-4 pb-12 pt-2 text-gray-700 shadow-none dark:text-slate-200',
 						{ flex: isOpen }
 					)}
 				>
+					<div className='flex items-center justify-between gap-2'>
+						<h1 className='text-lg font-semibold tracking-tighter text-gray-900 hover:opacity-90 dark:text-slate-200'>
+							SimplerDictionary
+						</h1>{' '}
+						<X
+							onClick={() => setIsOpen(false)}
+							className='rounded-md border text-gray-700 dark:text-slate-400'
+						/>
+					</div>
+					<Link
+						className='mt-4 rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
+						href='/'
+					>
+						Home
+					</Link>
+
 					<Link
 						className='rounded p-2 hover:bg-gray-100 dark:text-slate-200 dark:hover:bg-slate-800'
 						href='/about'
